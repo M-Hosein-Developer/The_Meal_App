@@ -11,10 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.the_meal.model.dataClass.CategoriesResp
+import com.example.the_meal.ui.featue.DetailCategory
 import com.example.the_meal.ui.featue.HomeScreen
 import com.example.the_meal.ui.intent.CategoryIntent
 import com.example.the_meal.ui.state.CategoryState
@@ -90,7 +93,14 @@ fun MainUi(categoryData: List<CategoriesResp.Category>) {
     NavHost(navController = navController , startDestination = MyScreens.HomeScreen.rout){
 
         composable(MyScreens.HomeScreen.rout){
-            HomeScreen(categoryData)
+            HomeScreen(categoryData , navController)
+        }
+
+        composable(
+            route = MyScreens.DetailCategory.rout + "/{DetailCategory}",
+            arguments = listOf(navArgument(MyScreens.DetailCategory.rout){type = NavType.StringType})
+        ){
+            DetailCategory(it.arguments!!.getString(MyScreens.DetailCategory.rout , ""))
         }
 
     }

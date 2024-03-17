@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Card
@@ -21,11 +22,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.the_meal.model.dataClass.CategoriesResp
+import com.example.the_meal.util.MyScreens
 
 @Composable
-fun HomeScreen(categoryData: List<CategoriesResp.Category>) {
+fun HomeScreen(categoryData: List<CategoriesResp.Category>, navController: NavHostController) {
 
     Column(
         Modifier
@@ -36,7 +39,7 @@ fun HomeScreen(categoryData: List<CategoriesResp.Category>) {
         HomeToolbar()
 
         MealCategory(categoryData){
-
+            navController.navigate(MyScreens.DetailCategory.rout + "/" + it)
         }
 
     }
@@ -95,7 +98,7 @@ fun MealCategoryItem(category: CategoriesResp.Category , onItemClicked :(String)
             AsyncImage(
                 model = category.strCategoryThumb,
                 contentDescription = null,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp).size(140.dp)
             )
 
             Text(
