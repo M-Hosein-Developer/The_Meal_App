@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         mealByCategory = mutableStateOf(listOf())
+
         lifecycleScope.launch {
             categoryViewModel.mealCategoryIntent.send(CategoryIntent.GetDataByCategory)
         }
@@ -79,15 +80,15 @@ class MainActivity : ComponentActivity() {
                     }
 
                 }
-
             }
-
         }
     }
 }
 
 @Composable
-fun MainUi(categoryData: List<CategoriesResp.Category>) {
+fun MainUi(
+    categoryData: List<CategoriesResp.Category>
+) {
 
     val navController = rememberNavController()
     NavHost(navController = navController , startDestination = MyScreens.HomeScreen.rout){
@@ -100,7 +101,7 @@ fun MainUi(categoryData: List<CategoriesResp.Category>) {
             route = MyScreens.DetailCategory.rout + "/{DetailCategory}",
             arguments = listOf(navArgument(MyScreens.DetailCategory.rout){type = NavType.StringType})
         ){
-            DetailCategory(it.arguments!!.getString(MyScreens.DetailCategory.rout , ""))
+            DetailCategory(categoryData , it.arguments!!.getString(MyScreens.DetailCategory.rout , "") , navController)
         }
 
     }
