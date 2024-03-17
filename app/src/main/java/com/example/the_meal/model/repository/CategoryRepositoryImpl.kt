@@ -14,7 +14,14 @@ class CategoryRepositoryImpl @Inject constructor(private val apiService: ApiServ
         while (true){
             val data = apiService.getCategoriesListOfMeal().categories
             emit(data)
-//            myDao.insertMealDataByCategory(data)
+            myDao.insertMealDataByCategory(data)
+            delay(10000)
+        }
+    }
+
+    override suspend fun getDataByCategoryFromDb(): Flow<List<CategoriesResp.Category>> = flow {
+        while (true){
+            emit(myDao.getMealDataByCategoryFromDb())
             delay(10000)
         }
     }

@@ -1,11 +1,13 @@
 package com.example.the_meal.viewModel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.the_meal.model.repository.CategoryRepository
 import com.example.the_meal.ui.intent.CategoryIntent
 import com.example.the_meal.ui.state.CategoryState
+import com.example.the_meal.util.NetworkChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(private val repository: CategoryRepository) : ViewModel(){
+class CategoryViewModel @Inject constructor(private val repository: CategoryRepository ,  private val applicationContext: Context) : ViewModel(){
 
     val mealCategoryIntent = Channel<CategoryIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<CategoryState>(CategoryState.Idle)
@@ -46,17 +48,22 @@ class CategoryViewModel @Inject constructor(private val repository: CategoryRepo
 
             _state.value = CategoryState.Loading
 
-            repository.getDataByCategory()
-                .catch { Log.v("errorCategory" , it.message.toString()) }
-                .collect{
+            if (NetworkChecker(applicationContext).internetConnection){
 
-                _state.value = try {
-                    CategoryState.dataByCategory(it)
-                }catch (e : Exception){
-                    CategoryState.Error(e.localizedMessage)
-                }
+                repository.getDataByCategory()
+                    .catch { Log.v("errorCategory" , it.message.toString()) }
+                    .collect{
+                        _state.value = CategoryState.dataByCategory(it)
+                    }
+            }else{
 
+                repository.getDataByCategoryFromDb()
+                    .catch { Log.v("errorCategory" , it.message.toString()) }
+                    .collect{
+                        _state.value = CategoryState.dataByCategory(it)
+                    }
             }
+
 
         }
 

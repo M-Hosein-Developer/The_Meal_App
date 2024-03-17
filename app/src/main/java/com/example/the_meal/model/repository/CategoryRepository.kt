@@ -7,4 +7,6 @@ interface CategoryRepository{
 
     suspend fun getDataByCategory() : Flow<List<CategoriesResp.Category>>
 
+    suspend fun getDataByCategoryFromDb() : Flow<List<CategoriesResp.Category>>
+
 }
